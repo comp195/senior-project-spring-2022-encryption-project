@@ -9,10 +9,18 @@ rot = Tk()
 rot.title = "Password Generator"
 rot.geometry =(1000,700)
 
-your_password = chr(randint(33,126))
+
 
 def newRand():
-    pass
+    #clear entry box
+    O_box.delete(0,END)
+    
+    pw_len= int(E_box.get())
+    
+    your_password = ''
+    for x in range(pw_len):
+        your_password += chr(randint(33,126))
+    O_box.insert(0,your_password)
 def clipper():
     pass
 frame = LabelFrame (rot, text ="Enter how long you want your password to be: ")
@@ -35,5 +43,6 @@ g_button.grid(row=0, column=0, padx=20)
 
 clip_but = Button(f_button, text="Copy to clipboard", command=clipper)
 clip_but.grid(row=0, column=1, padx=20)
+
 
 rot.mainloop()
