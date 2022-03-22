@@ -135,7 +135,7 @@ def check_password():
 #Grading Password strength
     if score < 13:
         result_box.insert("1.0","Password strength: Medium\n")
-    elif score > 13:
+    elif score < 16:
         result_box.insert("1.0", "Password strength: Strong\n")
     elif score >= 17:
         result_box.insert("1.0", "Password strength: Excellent\n")
