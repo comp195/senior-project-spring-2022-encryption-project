@@ -19,6 +19,8 @@ root.geometry("600x500")
 mytab = ttk.Notebook(root)
 mytab.pack()
 
+global selected
+selected = False
 #tab creation
 passTab = Frame(mytab, width=500, height=400)
 checkTab = Frame(mytab, width=500, height=400)
@@ -46,8 +48,8 @@ def newRand():
     
     your_password = ''
     for x in range(pw_len):
-        your_password += chr(randint(33,126))
-    O_box.insert(0,your_password)
+        your_password += chr(randint(33, 126))
+    O_box.insert(0, your_password)
     
 #Copy function
 def clipper():
@@ -56,17 +58,33 @@ def clipper():
     
     #copy clipboard
     root.clipboard_append(O_box.get())
+    
+#Paste function (Error)
+def paste_text():
+    if selected:
+        positions = O_box.index(INSERT)
+        O_box.insert(positions,selected)
 
+#Cut function (Error)
+def cut_text():
+    global selected
+    if O_box.selection_get():
+    
+    #grab selected text from text box
+        selected = O_box.selection_get()
+    #delete selected text from text Box
+        O_box.delete("sel.first","sel.last")
+        
 frame = LabelFrame (passTab, text ="Enter how long you want your password to be: ")
-frame.pack(pady=20)
+frame.pack(pady=5)
 
 #Entry box
 E_box = Entry(frame, font=("helvetica", 24))
-E_box.pack(pady=30,padx=20)
+E_box.pack(pady=10, padx=10)
 
 #Output box
-O_box = Entry(passTab,text='', font=("helvetica",24))
-O_box.pack(pady=30,padx=20)
+O_box = Entry(passTab, text='', font=("helvetica",24))
+O_box.pack(pady=20, padx=20)
 
 #create frame for button and button
 f_button = Frame(passTab)
@@ -77,6 +95,12 @@ g_button.grid(row=0, column=0, padx=20)
 
 clip_but = Button(f_button, text="Copy", command=clipper)
 clip_but.grid(row=0, column=1, padx=20)
+
+cut_but = Button(f_button, text="Cut", command=cut_text)
+cut_but.grid(row=0, column=2, padx=20)
+
+paste_text = Button(f_button, text="Paste", command=paste_text)
+paste_text.grid(row=0, column=3, padx=20)
 ######################################################################
 
 
@@ -140,35 +164,112 @@ def check_password():
     elif score >= 17:
         result_box.insert("1.0", "Password strength: Excellent\n")
 #Enter Box
-ET_box = Text(checkTab,height=5, width=100, font=("helvetica",18))
-ET_box.pack(pady=20,padx=20)
+check_f = LabelFrame(checkTab, text = "Check your password strength")
+check_f.pack(pady=5)
+
+ET_box = Text(check_f, height=5, width=100, font=("helvetica", 18))
+ET_box.pack(pady=10,padx=10)
 
 #check Button and frame
-check_f = Frame(checkTab)
-check_f.pack(pady=20)
+check_f1 = Frame(checkTab)
+check_f1.pack(pady=10)
 
 
-Check_but = Button(check_f, text="Check Strength", command=check_password)
-Check_but.grid(row=0, column=1, padx=20)
+Check_but = Button(check_f1, text="Check Strength", command=check_password)
+Check_but.grid(row=0, column=1, padx=10)
 
 #result box
 result_F = LabelFrame(checkTab, text="Result")
-result_F.pack(pady=20)
+result_F.pack(pady=5)
 
-result_box = Text(result_F,height=5, width=100, font=("helvetica",16))
-result_box.pack(pady=20, padx=20)
+result_box = Text(result_F, height=5, width=100, font=("helvetica", 16))
+result_box.pack(pady=10, padx=10)
 ######################################################################
 
 
 ######################################################################
 #Ceaser Cipper
-#Create entry text box
-ET_box2 = Entry(cipherTab,width=100,font=("helvetica", 18))
-ET_box2.pack(pady=30,padx=30)
 
+#class encryption
+def Encryption():
+    encryp_text = ""
+    key = 10
+    plaintext = str(ET_box2.get("1.0",'end-1c'))
+    
+    for c in plaintext:
+        if c.isupper():
+            c_index = ord(c) - ord('A')
+            # shift the current character by key positions
+            c_shifted = (c_index + key) % 26 + ord('A')
+            c_new = chr(c_shifted)
+            
+            encryp_text += c_new
+        elif c.islower():
+            c_index = ord(c) - ord('a')
+            # shift the current character by key positions
+            c_shifted = (c_index + key) % 26 + ord('a')
+            c_new = chr(c_shifted)
+            encryp_text += c_new
+            
+        elif c.isdigit():
+            c_new = (int(c) + key) % 10
+            encryp_text += str(c_new)
+            
+        else:
+            encryp_text += c
+            
+    result_box2.insert(END, encryp_text)
+#class decryption
+def Decrytption():
+    decrypt_text = ""
+    key = 10
+    plaintext = str( ET_box2.get( "1.0",'end-1c' ) )
+
+    for c in plaintext:
+        if c.isupper():
+            c_index = ord( c ) - ord('A')
+            # shift the current character by key positions
+            c_ogrin = (c_index - key) % 26 + ord('A')
+            c_old = chr(c_ogrin)
+            decrypt_text += c_old
+        elif c.islower():
+            c_index = ord(c) - ord( 'a' )
+            # shift the current character by key positions
+            c_ogrin = (c_index - key) % 26 + ord('a')
+            c_old = chr(c_ogrin)
+            decrypt_text += c_old
+        elif c.isdigit():
+            c_new = (int(c) + key) % 10
+            decrypt_text += str(c_old)
+        else:
+            decrypt_text += c
+
+    result_box2.insert(END, decrypt_text)
+#Create entry text box
+E_frame = LabelFrame(cipherTab, text="Input")
+E_frame.pack(pady=5)
+
+ET_box2 = Text(E_frame, height=10, width=100,  font=("helvetica", 16))
+ET_box2.pack(pady=15, padx=15)
+
+#Encryption Button
+EB_frame = Frame(cipherTab)
+EB_frame.pack(pady=5)
+
+Encrypt_But = Button(EB_frame, text="Encrypt", command=Encryption)
+Encrypt_But.grid(row=0, column=0, padx=10)
+#Decrytption Button
+DB_frame = Frame(cipherTab)
+DB_frame.pack(pady=5)
+
+Decrypt_But = Button(EB_frame, text="Decrypt", command=Decrytption)
+Decrypt_But.grid(row=0, column=1, padx=10)
 #Result Box for decode and encode
-result_box2 = Text(cipherTab, width=100,font=("helvetica", 18))
-result_box2.pack(pady=20, padx=20)
+Rframe = LabelFrame(cipherTab, text="Output")
+Rframe.pack(pady=5)
+
+result_box2 = Text(Rframe, height=10, width=100, font=("helvetica", 16))
+result_box2.pack(pady=10, padx=10)
 
 ######################################################################
 
