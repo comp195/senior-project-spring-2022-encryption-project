@@ -15,11 +15,11 @@ Function: Password will be generate base on how long user want it to be. Passwor
 
 function: This funcion will check user passwork strength. The method of grading base on Length, number character of lower case, number character of upper case, number character of punctuation. If the length of input password is lower than 8, check process will be finish and result will be "Very weak" and score will be zerowith no exception. If the length greater than 8, the checking process will continue. After checking, the input password will be scored. Base on the score, It will be evaluate base on belove system:
 
-<13 => strength = medium
+Score < 13 => strength = medium
 
-<16 => strength = strong
+Score < 16 => strength = strong
 
->=17 => strength = excellent 
+Sorce >= 17 => strength = excellent 
 
 * Service 3: Ceaser Cipher 
 
